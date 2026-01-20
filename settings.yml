@@ -1,0 +1,11 @@
+use_default_settings: true
+
+server:
+  bind_address: "0.0.0.0"
+  secret_key: "CHANGE_ME_TO_SOME_RANDOM_SECRET"
+  public_instance: false
+
+search:
+  formats:
+    - html
+    - json
