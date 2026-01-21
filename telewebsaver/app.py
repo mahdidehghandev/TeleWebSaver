@@ -3,6 +3,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 
 from .config import get_bot_token
@@ -15,9 +16,11 @@ logger = logging.getLogger("telewebsaver.app")
 async def main() -> None:
     token = get_bot_token()
 
+    session = AiohttpSession(timeout=300)
     bot = Bot(
         token=token,
         default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN),
+        session=session,
     )
     dp = Dispatcher()
     dp.include_router(router)

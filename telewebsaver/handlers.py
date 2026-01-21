@@ -126,9 +126,24 @@ async def on_result_button(callback: CallbackQuery) -> None:
         return
 
     try:
+        file_size = os.path.getsize(pdf_path) if pdf_path else 0
+        max_size = 50 * 1024 * 1024
+        
+        if file_size > max_size:
+            await callback.message.answer(
+                f"❌ فایل PDF خیلی بزرگ است ({file_size / 1024 / 1024:.1f} MB). "
+                f"حداکثر اندازه قابل ارسال: {max_size / 1024 / 1024} MB."
+            )
+            return
+        
         send_name = filename or "page.pdf"
         document = FSInputFile(path=pdf_path, filename=send_name)
         await callback.message.answer_document(document)
+    except Exception as e:
+        logger.exception("Error while sending PDF to Telegram: %s", url)
+        await callback.message.answer(
+            "❌ خطا در ارسال PDF به تلگرام. ممکن است فایل خیلی بزرگ باشد یا مشکل شبکه وجود داشته باشد."
+        )
     finally:
         if pdf_path and os.path.exists(pdf_path):
             try:
